@@ -20,7 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurity  {
-
+    @Autowired
+    private CustomAuthenticationManager customAuthenticationManager;
     @Bean
     public UserDetailsService userDetailsService(){
         return new UserServiceImpl();
@@ -31,20 +32,27 @@ public class WebSecurity  {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST,SecurityConstants.LOGIN)
+                .antMatchers(HttpMethod.POST,SecurityConstants.SIGN_UP_URL)
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .addFilter(new AuthenticationFilter(authentication -> authentication));
+                .addFilter(getAuthenticationFileter())
+               .addFilter(new AuthorizationFilter(customAuthenticationManager));
         return http.build();
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers(SecurityConstants.SIGN_UP_URL)
-                .antMatchers(SecurityConstants.LOGIN);
+                .antMatchers(SecurityConstants.ERROR);
     }
 
+
+    public AuthenticationFilter getAuthenticationFileter(){
+        final AuthenticationFilter filter = new AuthenticationFilter(customAuthenticationManager);
+        filter.setFilterProcessesUrl(SecurityConstants.LOGIN);
+        return filter;
+    }
 
 
 }
