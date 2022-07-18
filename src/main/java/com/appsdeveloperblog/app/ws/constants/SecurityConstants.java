@@ -12,9 +12,9 @@ public class SecurityConstants {
     public static final String HEADER_STRING = "Authorization";
     public static final String LOGIN = "/users/login";
     public static final String USER_ID = "userId";
-    public static final String TOKEN_SECRET = "codingmoja";
-    /*public static String getTokenSecret(){
+   // public static final String TOKEN_SECRET = "codingmoja";
+    public static String getTokenSecret(){
         AppProperties appProperties =(AppProperties) SpringApplicationContext.getBean("appProperties");
         return appProperties.getTokenSecret();
-    }*/
+    }
 }

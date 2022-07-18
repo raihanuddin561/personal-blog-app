@@ -38,7 +38,9 @@ public class WebSecurity  {
                 .authenticated()
                 .and()
                 .addFilter(getAuthenticationFileter())
-               .addFilter(new AuthorizationFilter(customAuthenticationManager));
+               .addFilter(new AuthorizationFilter(customAuthenticationManager))
+               .sessionManagement()
+               .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         return http.build();
     }
     @Bean
