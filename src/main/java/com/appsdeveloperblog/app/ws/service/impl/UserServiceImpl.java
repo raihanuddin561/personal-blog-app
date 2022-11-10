@@ -5,12 +5,15 @@ import com.appsdeveloperblog.app.ws.exceptions.UserServiceException;
 import com.appsdeveloperblog.app.ws.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.repository.UserRepository;
 import com.appsdeveloperblog.app.ws.service.UserService;
+import com.appsdeveloperblog.app.ws.shared.dto.AddressDTO;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.utils.Utils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -29,14 +32,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto user) {
         if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("Record already exists");
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(user,userEntity);
+       for(int i=0;i<user.getAddresses().size();i++){
+           AddressDTO addressDTO = user.getAddresses().get(i);
+           addressDTO.setUserDetails(user);
+           addressDTO.setAddressId(utils.generateAddressId(20));
+           user.getAddresses().set(i,addressDTO);
+       }
+        ModelMapper modelMapper = new ModelMapper();
+        UserEntity userEntity = modelMapper.map(user, UserEntity.class);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         UserEntity storedUserDetails =userRepository.save(userEntity);
-        UserDto returnedValue = new UserDto();
-        BeanUtils.copyProperties(storedUserDetails,returnedValue);
+        UserDto returnedValue = modelMapper.map(storedUserDetails,UserDto.class);
         return returnedValue;
     }
 
