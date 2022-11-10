@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,41 +21,27 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurity  {
-    @Autowired
-    private CustomAuthenticationManager customAuthenticationManager;
     @Bean
-    public UserDetailsService userDetailsService(){
-        return new UserServiceImpl();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,AuthenticationManager authenticationManager) throws Exception {
        http
                 .csrf()
                 .disable()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST,SecurityConstants.SIGN_UP_URL)
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .addFilter(getAuthenticationFileter())
-               .addFilter(new AuthorizationFilter(customAuthenticationManager))
-               .sessionManagement()
-               .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+               .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+               .and()
+               .authorizeHttpRequests((auth)->
+                       auth.antMatchers(HttpMethod.POST,SecurityConstants.SIGN_UP_URL).permitAll()
+                               .antMatchers(HttpMethod.POST,SecurityConstants.LOGIN).permitAll()
+                               .anyRequest().authenticated())
+               .addFilter(new CustomAuthenticationFilter(authenticationManager))
+               .addFilterBefore(new CustomAuthorizationFilter(),UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers(SecurityConstants.SIGN_UP_URL)
-                .antMatchers(SecurityConstants.ERROR);
-    }
 
 
-    public AuthenticationFilter getAuthenticationFileter(){
-        final AuthenticationFilter filter = new AuthenticationFilter(customAuthenticationManager);
-        filter.setFilterProcessesUrl(SecurityConstants.LOGIN);
-        return filter;
-    }
 
 
 }

@@ -10,6 +10,7 @@ import com.appsdeveloperblog.app.ws.model.response.RequestOperationStatus;
 import com.appsdeveloperblog.app.ws.model.response.UserRest;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,11 +46,10 @@ public class UserController {
                 ||userDetails.getLastName()==null||userDetails.getLastName().isEmpty()
                 ||userDetails.getEmail()==null||userDetails.getEmail().isEmpty()
                 ||userDetails.getPassword()==null||userDetails.getPassword().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
-        UserRest returnValue = new UserRest();
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDetails,userDto);
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto =modelMapper.map(userDetails,UserDto.class);
         UserDto createdUser = userService.createUser(userDto);
-        BeanUtils.copyProperties(createdUser,returnValue);
+        UserRest returnValue = modelMapper.map(createdUser,UserRest.class);
         return new ResponseEntity<>(returnValue,HttpStatus.CREATED);
     }
 

@@ -10,7 +10,7 @@ public class SecurityConstants {
     public static final long EXPIRATION_TIME = 864000000;
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
-    public static final String LOGIN = "/users/login";
+    public static final String LOGIN = "/login";
     public static final String USER_ID = "userId";
    // public static final String TOKEN_SECRET = "codingmoja";
     public static String getTokenSecret(){
