@@ -41,11 +41,6 @@ public class UserController {
             produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
     )
     public ResponseEntity<UserRest> createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
-        if(userDetails.getFirstName()==null
-                ||userDetails.getFirstName().isEmpty()
-                ||userDetails.getLastName()==null||userDetails.getLastName().isEmpty()
-                ||userDetails.getEmail()==null||userDetails.getEmail().isEmpty()
-                ||userDetails.getPassword()==null||userDetails.getPassword().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
         ModelMapper modelMapper = new ModelMapper();
         UserDto userDto =modelMapper.map(userDetails,UserDto.class);
         UserDto createdUser = userService.createUser(userDto);
