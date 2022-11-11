@@ -6,9 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 @Entity(name="users")
 public class UserEntity implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -28,7 +27,6 @@ public class UserEntity implements Serializable {
     private String emailVerificationToken;
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
-    @OneToMany(mappedBy = "userDetails",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @OneToMany(mappedBy = "userDetails",cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
     private List<AddressEntity> addresses;
 }
