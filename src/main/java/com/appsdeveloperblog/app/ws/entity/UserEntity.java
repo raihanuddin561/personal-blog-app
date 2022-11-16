@@ -1,13 +1,17 @@
 package com.appsdeveloperblog.app.ws.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-@Getter
-@Setter
+import java.util.Set;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name="users")
 public class UserEntity implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -27,6 +31,6 @@ public class UserEntity implements Serializable {
     private String emailVerificationToken;
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
-    @OneToMany(mappedBy = "userDetails",cascade = CascadeType.MERGE,fetch = FetchType.LAZY)
-    private List<AddressEntity> addresses;
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<AddressEntity> addresses;
 }

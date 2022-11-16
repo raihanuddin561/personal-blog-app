@@ -23,6 +23,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             String authHeader = request.getHeader(SecurityConstants.HEADER_STRING);
             if(authHeader == null || !authHeader.startsWith(SecurityConstants.TOKEN_PREFIX)){
                filterChain.doFilter(request,response);
+               return;
             }
             UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
