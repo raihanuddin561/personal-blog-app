@@ -1,13 +1,14 @@
 package com.appsdeveloperblog.app.ws.entity;
 
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity(name = "addresses")
 public class AddressEntity {
     @Id
@@ -22,10 +23,7 @@ public class AddressEntity {
     private String streetName;
     private String postalCode;
     private String type;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(
-            name="userId",
-            referencedColumnName = "userId"
-    )
-    private UserEntity userDetails;
+    @ManyToOne
+    @JoinColumn(name = "user_entity_id")
+    private UserEntity userEntity;
 }
