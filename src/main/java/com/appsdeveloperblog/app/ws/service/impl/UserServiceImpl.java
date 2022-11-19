@@ -4,6 +4,7 @@ import com.appsdeveloperblog.app.ws.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.exceptions.UserServiceException;
 import com.appsdeveloperblog.app.ws.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.repository.UserRepository;
+import com.appsdeveloperblog.app.ws.service.AddressService;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDTO;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
@@ -17,34 +18,46 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private Utils utils;
+    @Autowired
+    private AddressService addressService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
     public UserDto createUser(UserDto user) {
         if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("Record already exists");
-       for(int i=0;i<user.getAddresses().size();i++){
+       /*for(int i=0;i<user.getAddresses().size();i++){
            AddressDTO addressDTO = user.getAddresses().get(i);
            addressDTO.setUserDetails(user);
            addressDTO.setAddressId(utils.generateAddressId(20));
            user.getAddresses().set(i,addressDTO);
-       }
+       }*/
         ModelMapper modelMapper = new ModelMapper();
         UserEntity userEntity = modelMapper.map(user, UserEntity.class);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         UserEntity storedUserDetails =userRepository.save(userEntity);
+
         UserDto returnedValue = modelMapper.map(storedUserDetails,UserDto.class);
+        int i = 0;
+        for (AddressDTO address: returnedValue.getAddresses()) {
+            address.setUserDetails(returnedValue);
+            address.setAddressId(utils.generateAddressId(20));
+            address = addressService.save(address);
+            returnedValue.getAddresses().set(i++,address);
+        }
         return returnedValue;
     }
 
