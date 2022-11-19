@@ -31,6 +31,6 @@ public class UserEntity implements Serializable {
     private String emailVerificationToken;
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<AddressEntity> addresses;
+    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.MERGE)
+    private List<AddressEntity> addresses;
 }
