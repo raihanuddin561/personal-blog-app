@@ -13,8 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity(name="users")
-public class UserEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class UserEntity{
     @Id
     @GeneratedValue
     private long id;
@@ -31,6 +30,6 @@ public class UserEntity implements Serializable {
     private String emailVerificationToken;
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
-    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<AddressEntity> addresses;
 }
