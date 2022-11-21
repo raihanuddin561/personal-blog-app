@@ -37,27 +37,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDto createUser(UserDto user) {
         if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("Record already exists");
-       /*for(int i=0;i<user.getAddresses().size();i++){
+       for(int i=0;i<user.getAddresses().size();i++){
            AddressDTO addressDTO = user.getAddresses().get(i);
-           addressDTO.setUserDetails(user);
+           addressDTO.setUser(user);
            addressDTO.setAddressId(utils.generateAddressId(20));
            user.getAddresses().set(i,addressDTO);
-       }*/
+       }
         ModelMapper modelMapper = new ModelMapper();
         UserEntity userEntity = modelMapper.map(user, UserEntity.class);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         UserEntity storedUserDetails =userRepository.save(userEntity);
-
         UserDto returnedValue = modelMapper.map(storedUserDetails,UserDto.class);
-        int i = 0;
-        for (AddressDTO address: returnedValue.getAddresses()) {
-            address.setUserDetails(returnedValue);
-            address.setAddressId(utils.generateAddressId(20));
-            address = addressService.save(address);
-            returnedValue.getAddresses().set(i++,address);
-        }
         return returnedValue;
     }
 
