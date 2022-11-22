@@ -8,4 +8,6 @@ public interface AddressService {
     AddressDTO save(AddressDTO address);
 
     List<AddressDTO> getAddresses(String id);
+
+    AddressDTO getAddressById(String addressId);
 }
