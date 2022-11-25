@@ -1,6 +1,9 @@
 
 package com.appsdeveloperblog.app.ws.enums;
 
+import javax.annotation.Resource;
+
 public enum RequestOperationName {
-    DELETE
+    DELETE,
+    VERIFY_EMAIL ;
 }
