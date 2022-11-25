@@ -122,4 +122,16 @@ public class UserController {
         addressRest.add(link,addressesLink,userLink);
         return EntityModel.of(addressRest);
     }
+    @GetMapping("/email-verification")
+    public OperationStatusModel verifyEmail(@RequestParam("token") String token){
+        OperationStatusModel operationStatusModel = new OperationStatusModel();
+        boolean isVerified = userService.verifyEmail(token);
+        operationStatusModel.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
+        if(isVerified) {
+            operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }else {
+            operationStatusModel.setOperationResult(RequestOperationStatus.ERROR.name());
+        }
+        return operationStatusModel;
+    }
 }

@@ -33,8 +33,9 @@ public class WebSecurity  {
                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                .and()
                .authorizeHttpRequests((auth)->
-                       auth.antMatchers(HttpMethod.POST,SecurityConstants.SIGN_UP_URL).permitAll()
-                               .antMatchers(HttpMethod.POST,SecurityConstants.LOGIN).permitAll()
+                       auth
+                               .antMatchers(HttpMethod.POST,SecurityConstants.SIGN_UP_URL).permitAll()
+                               .antMatchers(HttpMethod.GET,SecurityConstants.VERIFY_EMAIL).permitAll()
                                .anyRequest().authenticated())
                .addFilter(new CustomAuthenticationFilter(authenticationManager))
                .addFilterBefore(new CustomAuthorizationFilter(),UsernamePasswordAuthenticationFilter.class);

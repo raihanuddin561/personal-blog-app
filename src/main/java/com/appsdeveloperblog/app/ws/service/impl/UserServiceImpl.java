@@ -48,6 +48,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
+        userEntity.setEmailVerificationStatus(Boolean.FALSE);
+        userEntity.setEmailVerificationToken(Utils.generateVerificationToken(publicUserId));
         UserEntity storedUserDetails =userRepository.save(userEntity);
         UserDto returnedValue = modelMapper.map(storedUserDetails,UserDto.class);
         return returnedValue;
@@ -88,6 +90,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity userEntity = userRepository.findByUserId(id);
         if(userEntity==null) throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         userRepository.delete(userEntity);
+    }
+
+    @Override
+    public boolean verifyEmail(String token) {
+        boolean hasVerified = Utils.hasVerifiedToken(token);
+        if(hasVerified){
+            UserEntity userEntity = userRepository.findUserByEmailVerificationToken(token);
+            if(userEntity==null) return false;
+            userEntity.setEmailVerificationToken(null);
+            userEntity.setEmailVerificationStatus(Boolean.TRUE);
+            userRepository.save(userEntity);
+            return true;
+        }
+        return false;
     }
 
     @Override
