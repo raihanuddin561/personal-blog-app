@@ -15,4 +15,6 @@ public interface UserService {
     void deleteUser(String id);
 
     boolean verifyEmail(String token);
+
+    boolean requestPasswordReset(String email);
 }
