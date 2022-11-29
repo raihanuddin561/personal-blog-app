@@ -1,9 +1,11 @@
 package com.mobileappws.developerBlog.service.impl;
 
 import com.mobileappws.developerBlog.constants.AppConstants;
+import com.mobileappws.developerBlog.entity.PasswordResetTokenEntity;
 import com.mobileappws.developerBlog.entity.UserEntity;
 import com.mobileappws.developerBlog.exceptions.UserServiceException;
 import com.mobileappws.developerBlog.model.response.ErrorMessages;
+import com.mobileappws.developerBlog.repository.PasswordResetTokenRepository;
 import com.mobileappws.developerBlog.repository.UserRepository;
 import com.mobileappws.developerBlog.service.AddressService;
 import com.mobileappws.developerBlog.service.EmailSenderService;
@@ -37,7 +39,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private AddressService addressService;
     @Autowired
     private EmailSenderService emailSenderService;
-
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
@@ -114,6 +117,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean requestPasswordReset(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if(userEntity==null) return false;
+        String token = Utils.generatePasswordResetToken(userEntity.getUserId());
+        PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+        passwordResetTokenEntity.setToken(token);
+        passwordResetTokenEntity.setUserEntity(userEntity);
+        passwordResetTokenRepository.save(passwordResetTokenEntity);
+        return emailSenderService.sendPasswordResetRequest(userEntity.getFirstName(),userEntity.getEmail(),token);
     }
 
     @Override

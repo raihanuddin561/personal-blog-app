@@ -4,6 +4,7 @@ package com.mobileappws.developerBlog.controller;
 import com.mobileappws.developerBlog.constants.AppConstants;
 import com.mobileappws.developerBlog.enums.RequestOperationName;
 import com.mobileappws.developerBlog.exceptions.UserServiceException;
+import com.mobileappws.developerBlog.model.request.PasswordResetRequestModel;
 import com.mobileappws.developerBlog.model.request.UserDetailsRequestModel;
 import com.mobileappws.developerBlog.model.response.*;
 import com.mobileappws.developerBlog.service.AddressService;
@@ -128,6 +129,18 @@ public class UserController {
         boolean isVerified = userService.verifyEmail(token);
         operationStatusModel.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
         if(isVerified) {
+            operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }else {
+            operationStatusModel.setOperationResult(RequestOperationStatus.ERROR.name());
+        }
+        return operationStatusModel;
+    }
+    @PostMapping("/password-reset-request")
+    public OperationStatusModel requestReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel){
+        OperationStatusModel operationStatusModel = new OperationStatusModel();
+        boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+        operationStatusModel.setOperationName(RequestOperationName.REQUEST_PASSWORD_RESET.name());
+        if(operationResult) {
             operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
         }else {
             operationStatusModel.setOperationResult(RequestOperationStatus.ERROR.name());

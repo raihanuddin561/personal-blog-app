@@ -29,6 +29,7 @@ public class WebSecurity  {
                        auth
                                .antMatchers(HttpMethod.POST,SecurityConstants.SIGN_UP_URL).permitAll()
                                .antMatchers(HttpMethod.GET,SecurityConstants.VERIFY_EMAIL).permitAll()
+                               .antMatchers(HttpMethod.POST,SecurityConstants.RESET_PASSWORD).permitAll()
                                .anyRequest().authenticated())
                .addFilter(new CustomAuthenticationFilter(authenticationManager))
                .addFilterBefore(new CustomAuthorizationFilter(),UsernamePasswordAuthenticationFilter.class);

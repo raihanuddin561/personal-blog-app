@@ -9,5 +9,14 @@ public class AppConstants {
             +"Complete your registration"
             +"</a><br/><br/>"
             +"Thank you!";
+    public static final String PASSWORD_RESET_HTMLBODY = "<h1>A request to reset your passwrod</h1>"
+            +"Hi, $firstName!"
+            +"<p>Someone has requested to reset your password with our project. If it were not you, please ignore it. Otherwise please click on the link below to set a new password</p>"
+            +"click on the following link: "
+            +"<a href='http://localhost:8080/verification-service/password-reset.html?token=$tokenValue'>"
+            +"LINK"
+            +"</a><br/><br/>"
+            +"Thank you!";
+    public static final String PASSWORD_RESET_SUBJECT = "RESET PASSWORD";
     public static final String SUBJECT = "One last step to complete your registration with REST app";
 }
