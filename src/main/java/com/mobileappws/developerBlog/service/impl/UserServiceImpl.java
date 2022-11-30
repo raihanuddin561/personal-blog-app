@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public boolean verifyEmail(String token) {
-        boolean hasVerified = Utils.hasVerifiedToken(token);
+        boolean hasVerified = Utils.hasTokenExpired(token);
         if(hasVerified){
             UserEntity userEntity = userRepository.findUserByEmailVerificationToken(token);
             if(userEntity==null) return false;
@@ -129,6 +129,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         passwordResetTokenEntity.setUserEntity(userEntity);
         passwordResetTokenRepository.save(passwordResetTokenEntity);
         return emailSenderService.sendPasswordResetRequest(userEntity.getFirstName(),userEntity.getEmail(),token);
+    }
+    @Override
+    public boolean resetPassword(String token, String password) {
+        if(Utils.hasTokenExpired(token)) return false;
+        PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(token);
+        if(passwordResetTokenEntity==null) return false;
+        UserEntity userEntity = passwordResetTokenEntity.getUserEntity();
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+        userEntity.setEncryptedPassword(encodedPassword);
+        UserEntity updatedUserEntity =userRepository.save(userEntity);
+        boolean returnValue = false;
+        if(updatedUserEntity!=null && updatedUserEntity.getEncryptedPassword().equalsIgnoreCase(encodedPassword)){
+            returnValue = true;
+        }
+        passwordResetTokenRepository.delete(passwordResetTokenEntity);
+        return returnValue;
     }
 
     @Override

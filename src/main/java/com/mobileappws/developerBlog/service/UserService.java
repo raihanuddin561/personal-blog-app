@@ -17,4 +17,6 @@ public interface UserService {
     boolean verifyEmail(String token);
 
     boolean requestPasswordReset(String email);
+
+    boolean resetPassword(String token, String password);
 }
