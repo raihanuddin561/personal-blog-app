@@ -4,6 +4,7 @@ package com.mobileappws.developerBlog.controller;
 import com.mobileappws.developerBlog.constants.AppConstants;
 import com.mobileappws.developerBlog.enums.RequestOperationName;
 import com.mobileappws.developerBlog.exceptions.UserServiceException;
+import com.mobileappws.developerBlog.model.request.PasswordResetModel;
 import com.mobileappws.developerBlog.model.request.PasswordResetRequestModel;
 import com.mobileappws.developerBlog.model.request.UserDetailsRequestModel;
 import com.mobileappws.developerBlog.model.response.*;
@@ -144,6 +145,17 @@ public class UserController {
             operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
         }else {
             operationStatusModel.setOperationResult(RequestOperationStatus.ERROR.name());
+        }
+        return operationStatusModel;
+    }
+    @PostMapping("/password-reset")
+    public OperationStatusModel resetPassword(@RequestBody PasswordResetModel passwordResetModel){
+        OperationStatusModel operationStatusModel = new OperationStatusModel();
+        boolean operationResult = userService.resetPassword(passwordResetModel.getToken(),passwordResetModel.getPassword());
+        operationStatusModel.setOperationName(RequestOperationName.PASSWORD_RESET.name());
+        operationStatusModel.setOperationResult(RequestOperationStatus.ERROR.name());
+        if(operationResult) {
+            operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
         }
         return operationStatusModel;
     }
