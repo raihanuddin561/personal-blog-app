@@ -14,7 +14,8 @@ public class SecurityConstants {
     public static final String LOGIN = "/login";
     public static final String USER_ID = "userId";
     public static final String VERIFY_EMAIL = "/users/email-verification";
-    public static final String RESET_PASSWORD = "/users/password-reset-request";
+    public static final String RESET_PASSWORD_REQUEST = "/users/password-reset-request";
+    public static final String RESET_PASSWORD = "/users/password-reset";
 
     // public static final String TOKEN_SECRET = "codingmoja";
     public static String getTokenSecret(){
