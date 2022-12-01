@@ -107,8 +107,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public boolean verifyEmail(String token) {
-        boolean hasVerified = Utils.hasTokenExpired(token);
-        if(hasVerified){
+        boolean hasExpired = Utils.hasTokenExpired(token);
+        if(!hasExpired){
             UserEntity userEntity = userRepository.findUserByEmailVerificationToken(token);
             if(userEntity==null) return false;
             userEntity.setEmailVerificationToken(null);

@@ -22,7 +22,7 @@ public class Utils {
                 .getBody();
         Date expiration = claims.getExpiration();
         Date today = new Date();
-        return today.before(expiration);
+        return !today.before(expiration);
     }
 
     public static String generateVerificationToken(String publicUserId) {
