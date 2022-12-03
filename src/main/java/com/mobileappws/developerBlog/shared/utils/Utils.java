@@ -26,7 +26,7 @@ public class Utils {
         return !today.before(expiration);
     }
 
-    public static String generateVerificationToken(String publicUserId) {
+    public String generateVerificationToken(String publicUserId) {
         String token = Jwts.builder()
                 .setSubject(publicUserId)
                 .setExpiration(new Date(System.currentTimeMillis()+SecurityConstants.EXPIRATION_TIME))

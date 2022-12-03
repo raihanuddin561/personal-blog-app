@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
         userEntity.setEmailVerificationStatus(Boolean.FALSE);
-        userEntity.setEmailVerificationToken(Utils.generateVerificationToken(publicUserId));
+        userEntity.setEmailVerificationToken(utils.generateVerificationToken(publicUserId));
         UserEntity storedUserDetails =userRepository.save(userEntity);
         UserDto returnedValue = modelMapper.map(storedUserDetails,UserDto.class);
         // amazon account needed
