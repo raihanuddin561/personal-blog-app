@@ -2,6 +2,7 @@ package com.mobileappws.developerBlog.service.impl;
 
 import com.mobileappws.developerBlog.entity.AddressEntity;
 import com.mobileappws.developerBlog.entity.UserEntity;
+import com.mobileappws.developerBlog.exceptions.UserServiceException;
 import com.mobileappws.developerBlog.repository.PasswordResetTokenRepository;
 import com.mobileappws.developerBlog.repository.UserRepository;
 import com.mobileappws.developerBlog.service.AddressService;
@@ -89,6 +90,13 @@ class UserServiceImplTest {
     }
 
     @Test
+    void getUser_UsernameExistException(){
+        when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
+        assertThrows(UserServiceException.class,()->{
+            userService.createUser(getUserDto());
+        });
+    }
+    @Test
     void test_createUser() throws MessagingException {
         when(userRepository.findByEmail(anyString())).thenReturn(null);
         when(utils.generateUserId(anyInt())).thenReturn(userId);
@@ -114,6 +122,7 @@ class UserServiceImplTest {
                 .firstName("Raihan")
                 .lastName("Uddin")
                .password("raihan")
+               .email("test@test.com")
                 .addresses(getAddressesDto())
                 .build();
     }

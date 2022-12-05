@@ -45,7 +45,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
     public UserDto createUser(UserDto user) throws MessagingException {
-        if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("Record already exists");
+        if(userRepository.findByEmail(user.getEmail()) != null)
+            throw new UserServiceException("Record already exists");
        for(int i=0;i<user.getAddresses().size();i++){
            AddressDTO addressDTO = user.getAddresses().get(i);
            addressDTO.setUser(user);
