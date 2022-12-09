@@ -12,6 +12,9 @@ import com.mobileappws.developerBlog.service.AddressService;
 import com.mobileappws.developerBlog.service.UserService;
 import com.mobileappws.developerBlog.shared.dto.AddressDTO;
 import com.mobileappws.developerBlog.shared.dto.UserDto;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
@@ -38,6 +41,13 @@ public class UserController {
     private UserService userService;
     @Autowired
     private AddressService addressService;
+    @ApiOperation(
+            value = "Get user by user id",
+            notes = "This service will provide specific user according to user id and URL path ex: /users/x7yzdit5l"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization",value = "BEARER JWT TOKEN",paramType = "header")
+    })
     @GetMapping(path = "/{id}",
     produces = {
 
@@ -62,7 +72,14 @@ public class UserController {
         UserRest returnValue = modelMapper.map(createdUser,UserRest.class);
         return new ResponseEntity<>(returnValue,HttpStatus.CREATED);
     }
-
+    @ApiOperation(
+            value = "Update User information by specific user id",
+            notes = "This service will update user information for specific user by user id, request body should contain all the update information. ex url: /users/x7yzdit5l " +
+                    "request body: {UserDetailsRequestModel}"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization",value = "BEARER JWT TOKEN",paramType = "header")
+    })
     @PutMapping(path = "/{id}",
             consumes = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE}
@@ -77,7 +94,13 @@ public class UserController {
         BeanUtils.copyProperties(updateddUser,returnValue);
         return new ResponseEntity<>(returnValue,HttpStatus.CREATED);
     }
-
+    @ApiOperation(
+            value = "Delete User information by specific user id",
+            notes = "This service will delete user information for specific user by user id, request body should contain all the update information. ex url: /users/x7yzdit5l "
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization",value = "BEARER JWT TOKEN",paramType = "header")
+    })
     @DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE})
     public OperationStatusModel deleteUser(@PathVariable String id)
     {
@@ -87,6 +110,13 @@ public class UserController {
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
         return returnValue;
     }
+    @ApiOperation(
+            value = "Get Address information by specific Address id",
+            notes = "This service will provide address information address id"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization",value = "BEARER JWT TOKEN",paramType = "header")
+    })
     @GetMapping(path = "/{id}/addresses",
             produces = {
                     MediaType.APPLICATION_JSON_VALUE,
