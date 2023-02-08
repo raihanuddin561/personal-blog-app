@@ -41,6 +41,10 @@ public class UserController {
     private UserService userService;
     @Autowired
     private AddressService addressService;
+    @GetMapping("/hello")
+    public String helloUser(){
+        return "Hello mobile ap ws";
+    }
     @ApiOperation(
             value = "Get user by user id",
             notes = "This service will provide specific user according to user id and URL path ex: /users/x7yzdit5l"

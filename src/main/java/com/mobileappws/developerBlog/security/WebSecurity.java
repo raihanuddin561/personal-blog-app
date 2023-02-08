@@ -32,7 +32,7 @@ public class WebSecurity  {
                                .antMatchers(HttpMethod.POST,SecurityConstants.RESET_PASSWORD_REQUEST).permitAll()
                                .antMatchers(HttpMethod.POST,SecurityConstants.RESET_PASSWORD).permitAll()
                                .antMatchers("/v2/api-docs","/swagger*/**",
-                                       "/configuratin/**","/webjars/**").permitAll()
+                                       "/configuratin/**","/webjars/**","/users/hello").permitAll()
                                .anyRequest().authenticated())
                .addFilter(new CustomAuthenticationFilter(authenticationManager))
                .addFilterBefore(new CustomAuthorizationFilter(),UsernamePasswordAuthenticationFilter.class);
